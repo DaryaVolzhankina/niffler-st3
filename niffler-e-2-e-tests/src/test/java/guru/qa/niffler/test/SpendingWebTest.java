@@ -33,7 +33,7 @@ public class SpendingWebTest extends BaseWebTest {
         Configuration.browserSize = "1980x1024";
     }
 
-    private static final String user = "dima";
+    private static final String user = USERNAME;
 
     @BeforeEach
     void doLogin() {
@@ -67,8 +67,8 @@ public class SpendingWebTest extends BaseWebTest {
 
         Allure.step(
                 "Delete spending",
-                () -> $(byText("Delete selected")).click())
-        ;
+                () -> $(byText("Delete selected")).click()
+        );
 
         Allure.step(
                 "Check spendings",
