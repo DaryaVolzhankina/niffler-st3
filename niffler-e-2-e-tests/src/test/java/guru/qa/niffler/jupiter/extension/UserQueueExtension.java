@@ -67,7 +67,7 @@ public class UserQueueExtension implements BeforeEachCallback, AfterTestExecutio
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) {
+    public void afterTestExecution(ExtensionContext context) throws Exception {
         Map<User.UserType, UserJson> usersFromTest = context.getStore(NAMESPACE).get(getAllureId(context), Map.class);
         for (User.UserType userType : usersFromTest.keySet()) usersQueue.get(userType).add(usersFromTest.get(userType));
     }
