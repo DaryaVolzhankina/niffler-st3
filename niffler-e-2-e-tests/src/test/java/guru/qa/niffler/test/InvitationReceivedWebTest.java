@@ -1,6 +1,5 @@
 package guru.qa.niffler.test;
 
-
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
@@ -12,12 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Selenide.$;
 import static guru.qa.niffler.jupiter.annotation.User.UserType.INVITATION_RECEIVED;
-import static guru.qa.niffler.jupiter.annotation.User.UserType.WITH_FRIENDS;
 
-public class FriendsWebTest extends BaseWebTest {
+public class InvitationReceivedWebTest extends BaseWebTest {
 
     @BeforeEach
-    void doLogin(@User(userType = WITH_FRIENDS) UserJson userForTest, @User(userType = INVITATION_RECEIVED) UserJson userForTestAnother) {
+    void doLogin(@User(userType = INVITATION_RECEIVED) UserJson userForTest) {
         Selenide.open("http://127.0.0.1:3000/main");
         $("a[href*='redirect']").click();
         $("input[name='username']").setValue(userForTest.getUsername());
@@ -26,10 +24,8 @@ public class FriendsWebTest extends BaseWebTest {
     }
 
     @Test
-    @AllureId("101")
-    void friendShouldBeDisplayedInTable0(@User(userType = WITH_FRIENDS) UserJson userForTest, @User(userType = INVITATION_RECEIVED) UserJson userForTestAnother) throws InterruptedException {
-        System.out.println(userForTest.getUsername());
-        System.out.println(userForTestAnother.getUsername());
+    @AllureId("107")
+    void submitInvitationShouldBeDisplayedInTable0() throws InterruptedException {
         pages.mainPage()
                 .getHeader()
                 .getFriendsIcon()
@@ -38,19 +34,17 @@ public class FriendsWebTest extends BaseWebTest {
                 .getNoFriendsField()
                 .shouldNotBe(Condition.visible);
         pages.friendsPage()
-                .getFriendsList()
+                .getActionsList()
                 .should(CollectionCondition.sizeGreaterThan(0));
         pages.friendsPage()
-                .getFriendsList()
-                .get(0)
-                .$$("td")
-                .get(3)
-                .shouldHave(Condition.text("You are friends"));
+                .getActionsList()
+                .first()
+                .shouldBe(Condition.visible);
     }
 
     @Test
-    @AllureId("102")
-    void friendShouldBeDisplayedInTable1() throws InterruptedException {
+    @AllureId("108")
+    void submitInvitationShouldBeDisplayedInTable1() throws InterruptedException {
         pages.mainPage()
                 .getHeader()
                 .getFriendsIcon()
@@ -59,19 +53,17 @@ public class FriendsWebTest extends BaseWebTest {
                 .getNoFriendsField()
                 .shouldNotBe(Condition.visible);
         pages.friendsPage()
-                .getFriendsList()
+                .getActionsList()
                 .should(CollectionCondition.sizeGreaterThan(0));
         pages.friendsPage()
-                .getFriendsList()
-                .get(0)
-                .$$("td")
-                .get(3)
-                .shouldHave(Condition.text("You are friends"));
+                .getActionsList()
+                .first()
+                .shouldBe(Condition.visible);
     }
 
     @Test
-    @AllureId("103")
-    void friendShouldBeDisplayedInTable2() throws InterruptedException {
+    @AllureId("109")
+    void submitInvitationShouldBeDisplayedInTable2() throws InterruptedException {
         pages.mainPage()
                 .getHeader()
                 .getFriendsIcon()
@@ -80,13 +72,11 @@ public class FriendsWebTest extends BaseWebTest {
                 .getNoFriendsField()
                 .shouldNotBe(Condition.visible);
         pages.friendsPage()
-                .getFriendsList()
+                .getActionsList()
                 .should(CollectionCondition.sizeGreaterThan(0));
         pages.friendsPage()
-                .getFriendsList()
-                .get(0)
-                .$$("td")
-                .get(3)
-                .shouldHave(Condition.text("You are friends"));
+                .getActionsList()
+                .first()
+                .shouldBe(Condition.visible);
     }
 }
