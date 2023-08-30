@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import java.lang.reflect.Executable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Stream;
 
 public class UserQueueExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
@@ -47,11 +48,13 @@ public class UserQueueExtension implements BeforeEachCallback, AfterTestExecutio
     public void beforeEach(ExtensionContext context) throws Exception {
         Optional<Method> beforeEachMethod = Arrays.stream(context.getRequiredTestClass().getDeclaredMethods())
                 .filter(method -> method.isAnnotationPresent(BeforeEach.class)).findFirst();
-        Parameter[] parameters = beforeEachMethod.map(Executable::getParameters)
-                .orElseGet(() -> context.getRequiredTestMethod().getParameters());
+        Parameter[] parameters1 = beforeEachMethod.get().getParameters();
+        Parameter[] parameters2 = context.getRequiredTestMethod().getParameters();
+        Parameter[] parameters = Stream.concat(Arrays.stream(parameters1), Arrays.stream(parameters2)).toArray(
+                size -> (Parameter[]) Array.newInstance(parameters1.getClass().getComponentType(), size));
         Map<User.UserType, UserJson> candidatesForTest = new HashMap<>();
         for (Parameter parameter : parameters) {
-            if (parameter.getType().isAssignableFrom(UserJson.class)) {
+            if (parameter.getType().isAssignableFrom(UserJson.class) && parameter.isAnnotationPresent(User.class)) {
                 User parameterAnnotation = parameter.getAnnotation(User.class);
                 User.UserType userType = parameterAnnotation.userType();
                 Queue<UserJson> usersQueueByType = usersQueue.get(parameterAnnotation.userType());

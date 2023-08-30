@@ -17,7 +17,7 @@ import static guru.qa.niffler.jupiter.annotation.User.UserType.WITH_FRIENDS;
 public class FriendsWebTest extends BaseWebTest {
 
     @BeforeEach
-    void doLogin(@User(userType = WITH_FRIENDS) UserJson userForTest, @User(userType = INVITATION_RECEIVED) UserJson userForTestAnother) {
+    void doLogin(@User(userType = WITH_FRIENDS) UserJson userForTest) {
         Selenide.open("http://127.0.0.1:3000/main");
         $("a[href*='redirect']").click();
         $("input[name='username']").setValue(userForTest.getUsername());
