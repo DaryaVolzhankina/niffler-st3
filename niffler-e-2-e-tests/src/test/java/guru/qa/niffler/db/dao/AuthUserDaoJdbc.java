@@ -65,6 +65,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
             } catch (SQLException e) {
                 conn.rollback();
                 conn.setAutoCommit(true);
+                throw new RuntimeException(e);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -90,6 +91,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
             } catch (SQLException e) {
                 conn.rollback();
                 conn.setAutoCommit(true);
+                throw new RuntimeException(e);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
