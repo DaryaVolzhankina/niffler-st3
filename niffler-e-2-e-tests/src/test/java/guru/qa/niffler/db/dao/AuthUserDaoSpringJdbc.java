@@ -77,7 +77,6 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public AuthUserEntity getUserFromAuthById(UUID userID) {
-        List<AuthorityEntity> authorities = new ArrayList<AuthorityEntity>();
         return authJdbcTemplate.queryForObject("SELECT * FROM users u " +
                 "JOIN authorities a ON u.id = a.user_id " +
                 "WHERE u.id = ?", UserEntityAuthRowMapper.INSTANCE, userID);
