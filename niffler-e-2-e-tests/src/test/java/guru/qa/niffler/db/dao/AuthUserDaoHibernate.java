@@ -1,12 +1,12 @@
 package guru.qa.niffler.db.dao;
 
-import guru.qa.niffler.db.model.UserEntity;
+import guru.qa.niffler.db.model.entity.AuthUserEntity;
 
 import java.util.UUID;
 
 public class AuthUserDaoHibernate implements AuthUserDao{
     @Override
-    public int createUser(UserEntity user) {
+    public int createUserInAuth(AuthUserEntity user) {
         return 0;
     }
 
@@ -16,12 +16,12 @@ public class AuthUserDaoHibernate implements AuthUserDao{
     }
 
     @Override
-    public UserEntity getUserFromAuthById(UUID userID) {
+    public AuthUserEntity getUserFromAuthById(UUID userID) {
         return null;
     }
 
     @Override
-    public void updateUserInAuth(UserEntity user) {
+    public void updateUserInAuth(AuthUserEntity user) {
 
     }
 }

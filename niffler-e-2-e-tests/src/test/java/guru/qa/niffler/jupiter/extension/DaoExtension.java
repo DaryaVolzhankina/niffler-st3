@@ -27,7 +27,7 @@ public class DaoExtension implements TestInstancePostProcessor {
                 } else if ("spring".equals(System.getProperty("db.impl"))) {
                     dao = new AuthUserDaoSpringJdbc();
                 } else {
-                    dao = new AuthUserDaoJdbc();
+                    dao = new AuthUserDaoSpringJdbc();
                 }
 
                 field.set(testInstance, dao);

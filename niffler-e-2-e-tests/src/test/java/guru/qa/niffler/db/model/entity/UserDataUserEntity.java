@@ -1,4 +1,6 @@
-package guru.qa.niffler.db.model;
+package guru.qa.niffler.db.model.entity;
+
+import guru.qa.niffler.db.model.enums.CurrencyValues;
 
 import java.util.UUID;
 

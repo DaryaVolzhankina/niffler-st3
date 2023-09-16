@@ -2,9 +2,9 @@ package guru.qa.niffler.db.dao;
 
 import guru.qa.niffler.db.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDb;
-import guru.qa.niffler.db.model.Authority;
-import guru.qa.niffler.db.model.AuthorityEntity;
-import guru.qa.niffler.db.model.UserEntity;
+import guru.qa.niffler.db.model.enums.Authority;
+import guru.qa.niffler.db.model.entity.AuthorityEntity;
+import guru.qa.niffler.db.model.entity.AuthUserEntity;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -19,7 +19,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     private static DataSource authDs = DataSourceProvider.INSTANCE.getDataSource(ServiceDb.AUTH);
 
     @Override
-    public int createUser(UserEntity user) {
+    public int createUserInAuth(AuthUserEntity user) {
         int createdRows = 0;
         try (Connection conn = authDs.getConnection()) {
 
@@ -99,8 +99,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public UserEntity getUserFromAuthById(UUID userID) {
-        UserEntity user = new UserEntity();
+    public AuthUserEntity getUserFromAuthById(UUID userID) {
+        AuthUserEntity user = new AuthUserEntity();
         try (Connection conn = authDs.getConnection();
              PreparedStatement usersPs = conn.prepareStatement("SELECT * FROM users u " +
                      "JOIN authorities a ON u.id = a.user_id " +
@@ -135,7 +135,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public void updateUserInAuth(UserEntity user) {
+    public void updateUserInAuth(AuthUserEntity user) {
         int updatedRows = 0;
         try (Connection conn = authDs.getConnection();
              PreparedStatement usersPs = conn.prepareStatement("UPDATE users SET password = ?, enabled = ?, account_non_expired = ?, " +

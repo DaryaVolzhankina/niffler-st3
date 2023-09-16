@@ -1,7 +1,7 @@
 package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.db.model.UserEntity;
+import guru.qa.niffler.db.model.entity.AuthUserEntity;
 import guru.qa.niffler.jupiter.annotation.DBUser;
 import guru.qa.niffler.jupiter.extension.DaoExtension;
 import org.junit.jupiter.api.Test;
@@ -14,12 +14,9 @@ import static com.codeborne.selenide.Selenide.$;
 @ExtendWith(DaoExtension.class)
 public class LoginTest extends BaseWebTest {
 
-    @DBUser(
-            username = "valentin_9",
-            password = "12345"
-    )
+    @DBUser
     @Test
-    void mainPageShouldBeVisibleAfterLogin(UserEntity user) {
+    void mainPageShouldBeVisibleAfterLogin(AuthUserEntity user) {
         Selenide.open("http://127.0.0.1:3000/main");
         $("a[href*='redirect']").click();
         $("input[name='username']").setValue(user.getUsername());
