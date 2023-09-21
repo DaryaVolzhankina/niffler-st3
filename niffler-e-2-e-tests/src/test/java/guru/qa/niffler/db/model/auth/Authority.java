@@ -1,4 +1,4 @@
-package guru.qa.niffler.db.model.enums;
+package guru.qa.niffler.db.model.auth;
 
 public enum Authority {
     read, write

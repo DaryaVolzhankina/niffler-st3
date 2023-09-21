@@ -1,10 +1,11 @@
-package guru.qa.niffler.db.dao;
+package guru.qa.niffler.db.dao.impl;
 
-import guru.qa.niffler.db.DataSourceProvider;
+import guru.qa.niffler.db.jdbc.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDb;
-import guru.qa.niffler.db.model.enums.Authority;
-import guru.qa.niffler.db.model.entity.AuthorityEntity;
-import guru.qa.niffler.db.model.entity.AuthUserEntity;
+import guru.qa.niffler.db.dao.AuthUserDao;
+import guru.qa.niffler.db.model.auth.Authority;
+import guru.qa.niffler.db.model.auth.AuthorityEntity;
+import guru.qa.niffler.db.model.auth.AuthUserEntity;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -75,15 +76,15 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public void deleteUserByIdInAuth(UUID userID) {
+    public void deleteUserByIdInAuth(AuthUserEntity user) {
         try (Connection conn = authDs.getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement authorityPs = conn.prepareStatement(
                     "DELETE FROM authorities WHERE user_id=?");
                  PreparedStatement usersPs = conn.prepareStatement(
                          "DELETE FROM users WHERE id=?")) {
-                authorityPs.setObject(1, userID);
-                usersPs.setObject(1, userID);
+                authorityPs.setObject(1, user.getId());
+                usersPs.setObject(1, user.getId());
                 authorityPs.executeUpdate();
                 usersPs.executeUpdate();
                 conn.commit();

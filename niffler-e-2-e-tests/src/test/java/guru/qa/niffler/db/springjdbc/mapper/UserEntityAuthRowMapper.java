@@ -1,8 +1,8 @@
-package guru.qa.niffler.db.mapper;
+package guru.qa.niffler.db.springjdbc.mapper;
 
-import guru.qa.niffler.db.model.enums.Authority;
-import guru.qa.niffler.db.model.entity.AuthorityEntity;
-import guru.qa.niffler.db.model.entity.AuthUserEntity;
+import guru.qa.niffler.db.model.auth.Authority;
+import guru.qa.niffler.db.model.auth.AuthorityEntity;
+import guru.qa.niffler.db.model.auth.AuthUserEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

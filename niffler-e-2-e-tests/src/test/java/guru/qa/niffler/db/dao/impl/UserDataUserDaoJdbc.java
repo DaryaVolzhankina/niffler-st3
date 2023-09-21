@@ -1,10 +1,10 @@
-package guru.qa.niffler.db.dao;
+package guru.qa.niffler.db.dao.impl;
 
-import guru.qa.niffler.db.DataSourceProvider;
+import guru.qa.niffler.db.jdbc.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDb;
-import guru.qa.niffler.db.model.enums.CurrencyValues;
-import guru.qa.niffler.db.model.entity.UserDataUserEntity;
-import guru.qa.niffler.db.model.entity.AuthUserEntity;
+import guru.qa.niffler.db.dao.UserDataUserDAO;
+import guru.qa.niffler.db.model.CurrencyValues;
+import guru.qa.niffler.db.model.userdata.UserDataUserEntity;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -17,7 +17,7 @@ public class UserDataUserDaoJdbc implements UserDataUserDAO {
     private static DataSource userdataDs = DataSourceProvider.INSTANCE.getDataSource(ServiceDb.USERDATA);
 
     @Override
-    public int createUserInUserData(AuthUserEntity user) {
+    public int createUserInUserData(UserDataUserEntity user) {
         int createdRows = 0;
         try (Connection conn = userdataDs.getConnection()) {
             try (PreparedStatement usersPs = conn.prepareStatement(
@@ -37,11 +37,11 @@ public class UserDataUserDaoJdbc implements UserDataUserDAO {
     }
 
     @Override
-    public void deleteUserByUsernameInUserData(String username) {
+    public void deleteUserInUserData(UserDataUserEntity user) {
         try (Connection conn = userdataDs.getConnection()) {
             try (PreparedStatement usersPs = conn.prepareStatement(
                     "DELETE FROM users WHERE username = ?")) {
-                usersPs.setString(1, username);
+                usersPs.setString(1, user.getUsername());
                 usersPs.executeUpdate();
             }
         } catch (SQLException e) {
