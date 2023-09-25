@@ -24,12 +24,13 @@ import java.util.Arrays;
 public class DBUserExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(DBUserExtension.class);
-    private final AuthUserDao authUserDAO = new AuthUserDaoHibernate();
-    private final UserDataUserDAO userDataUserDAO = new UserDataUserDaoHibernate();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         Faker faker = new Faker();
+        AuthUserDao authUserDAO = new AuthUserDaoHibernate();
+        UserDataUserDAO userDataUserDAO = new UserDataUserDaoHibernate();
+
         DBUser annotation = context.getRequiredTestMethod().getAnnotation(DBUser.class);
         if (annotation != null) {
             AuthUserEntity user = new AuthUserEntity();
@@ -76,6 +77,8 @@ public class DBUserExtension implements BeforeEachCallback, AfterTestExecutionCa
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
+        AuthUserDao authUserDAO = new AuthUserDaoHibernate();
+        UserDataUserDAO userDataUserDAO = new UserDataUserDaoHibernate();
         AuthUserEntity authUser = ((AuthUserEntity) context.getStore(NAMESPACE).get(context.getUniqueId()));
         userDataUserDAO.deleteUserInUserData(userDataUserDAO.getUserFromUserDataByUsername(authUser.getUsername()));
         authUserDAO.deleteUserByIdInAuth(authUser);
