@@ -2,12 +2,14 @@ package guru.qa.niffler.jupiter.extension;
 
 import com.github.javafaker.Faker;
 import guru.qa.niffler.db.dao.AuthUserDao;
-import guru.qa.niffler.db.dao.AuthUserDaoSpringJdbc;
+import guru.qa.niffler.db.dao.impl.AuthUserDaoHibernate;
 import guru.qa.niffler.db.dao.UserDataUserDAO;
-import guru.qa.niffler.db.dao.UserDataUserDaoSpringJdbc;
-import guru.qa.niffler.db.model.enums.Authority;
-import guru.qa.niffler.db.model.entity.AuthorityEntity;
-import guru.qa.niffler.db.model.entity.AuthUserEntity;
+import guru.qa.niffler.db.dao.impl.UserDataUserDaoHibernate;
+import guru.qa.niffler.db.model.CurrencyValues;
+import guru.qa.niffler.db.model.auth.Authority;
+import guru.qa.niffler.db.model.auth.AuthorityEntity;
+import guru.qa.niffler.db.model.auth.AuthUserEntity;
+import guru.qa.niffler.db.model.userdata.UserDataUserEntity;
 import guru.qa.niffler.jupiter.annotation.DBUser;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -22,17 +24,20 @@ import java.util.Arrays;
 public class DBUserExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(DBUserExtension.class);
-    private final AuthUserDao authUserDAO = new AuthUserDaoSpringJdbc();
-    private final UserDataUserDAO userDataUserDAO = new UserDataUserDaoSpringJdbc();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         Faker faker = new Faker();
+        AuthUserDao authUserDAO = new AuthUserDaoHibernate();
+        UserDataUserDAO userDataUserDAO = new UserDataUserDaoHibernate();
+
         DBUser annotation = context.getRequiredTestMethod().getAnnotation(DBUser.class);
         if (annotation != null) {
             AuthUserEntity user = new AuthUserEntity();
-            user.setUsername(annotation.username().isEmpty() ? faker.name().username() : annotation.username());
-            user.setPassword(annotation.password().isEmpty() ? faker.internet().password() : annotation.password());
+            String username = annotation.username().isEmpty() ? faker.name().username() : annotation.username();
+            String password = annotation.password().isEmpty() ? faker.internet().password() : annotation.password();
+            user.setUsername(username);
+            user.setPassword(password);
             user.setEnabled(true);
             user.setAccountNonExpired(true);
             user.setAccountNonLocked(true);
@@ -41,10 +46,17 @@ public class DBUserExtension implements BeforeEachCallback, AfterTestExecutionCa
                     .map(a -> {
                         AuthorityEntity ae = new AuthorityEntity();
                         ae.setAuthority(a);
+                        ae.setUser(user);
                         return ae;
                     }).toList());
             authUserDAO.createUserInAuth(user);
-            userDataUserDAO.createUserInUserData(user);
+            user.setPassword(password);
+
+            UserDataUserEntity userdataUser = new UserDataUserEntity();
+            userdataUser.setUsername(user.getUsername());
+            userdataUser.setCurrency(CurrencyValues.RUB);
+            userDataUserDAO.createUserInUserData(userdataUser);
+
             context.getStore(NAMESPACE).put(context.getUniqueId(), user);
         }
     }
@@ -65,8 +77,10 @@ public class DBUserExtension implements BeforeEachCallback, AfterTestExecutionCa
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
-        AuthUserEntity user = ((AuthUserEntity) context.getStore(NAMESPACE).get(context.getUniqueId()));
-        userDataUserDAO.deleteUserByUsernameInUserData(user.getUsername());
-        authUserDAO.deleteUserByIdInAuth(user.getId());
+        AuthUserDao authUserDAO = new AuthUserDaoHibernate();
+        UserDataUserDAO userDataUserDAO = new UserDataUserDaoHibernate();
+        AuthUserEntity authUser = ((AuthUserEntity) context.getStore(NAMESPACE).get(context.getUniqueId()));
+        userDataUserDAO.deleteUserInUserData(userDataUserDAO.getUserFromUserDataByUsername(authUser.getUsername()));
+        authUserDAO.deleteUserByIdInAuth(authUser);
     }
 }

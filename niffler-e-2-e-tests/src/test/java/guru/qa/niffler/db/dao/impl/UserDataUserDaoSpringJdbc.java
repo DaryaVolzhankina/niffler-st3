@@ -1,11 +1,11 @@
-package guru.qa.niffler.db.dao;
+package guru.qa.niffler.db.dao.impl;
 
-import guru.qa.niffler.db.DataSourceProvider;
+import guru.qa.niffler.db.jdbc.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDb;
-import guru.qa.niffler.db.mapper.UserEntityUserDataRowMapper;
-import guru.qa.niffler.db.model.enums.CurrencyValues;
-import guru.qa.niffler.db.model.entity.UserDataUserEntity;
-import guru.qa.niffler.db.model.entity.AuthUserEntity;
+import guru.qa.niffler.db.dao.UserDataUserDAO;
+import guru.qa.niffler.db.springjdbc.mapper.UserEntityUserDataRowMapper;
+import guru.qa.niffler.db.model.CurrencyValues;
+import guru.qa.niffler.db.model.userdata.UserDataUserEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -22,14 +22,14 @@ public class UserDataUserDaoSpringJdbc implements UserDataUserDAO {
     }
 
     @Override
-    public int createUserInUserData(AuthUserEntity user) {
+    public int createUserInUserData(UserDataUserEntity user) {
         return userdataJdbcTemplate.update("INSERT INTO users (username, currency) VALUES (?, ?)",
                 user.getUsername(), CurrencyValues.RUB.name());
     }
 
     @Override
-    public void deleteUserByUsernameInUserData(String username) {
-        userdataJdbcTemplate.update("DELETE FROM users WHERE username = ?", username);
+    public void deleteUserInUserData(UserDataUserEntity user) {
+        userdataJdbcTemplate.update("DELETE FROM users WHERE username = ?", user.getUsername());
     }
 
     @Override

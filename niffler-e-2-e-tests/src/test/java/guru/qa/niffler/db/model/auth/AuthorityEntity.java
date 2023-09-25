@@ -1,6 +1,5 @@
-package guru.qa.niffler.db.model.entity;
+package guru.qa.niffler.db.model.auth;
 
-import guru.qa.niffler.db.model.enums.Authority;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
