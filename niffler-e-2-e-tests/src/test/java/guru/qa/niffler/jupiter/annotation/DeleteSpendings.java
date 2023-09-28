@@ -12,5 +12,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith({DeleteSpendingExtension.class})
 public @interface DeleteSpendings {
-    String categoryId() default "";
+    String username() default "";
+    String category() default "";
 }

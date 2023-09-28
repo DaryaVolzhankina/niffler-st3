@@ -19,8 +19,9 @@ public class DeleteSpendingExtension implements AfterEachCallback {
         DeleteSpendings annotation = context.getRequiredTestMethod().getAnnotation(DeleteSpendings.class);
         if (annotation != null) {
             SpendDao spendDao = new SpendDaoHibernate();
-            UUID categoryId = annotation.categoryId().isEmpty() ?
-                    ((CategoryJson) context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId() + "_category")).getId() : UUID.fromString(annotation.categoryId());
+            UUID categoryId = annotation.username().isEmpty() && annotation.category().isEmpty() ?
+                    ((CategoryJson) context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId() + "_category")).getId() :
+                    spendDao.getCategoryByUsernameCategoryName(annotation.username(), annotation.category()).getId();
             CategoryEntity categoryEntity = spendDao.getCategoryByUUID(categoryId);
             spendDao.deleteAllSpends(spendDao.getSpendsByCategory(categoryEntity));
         }

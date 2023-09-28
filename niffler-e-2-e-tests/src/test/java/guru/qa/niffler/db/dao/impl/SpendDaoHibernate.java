@@ -29,6 +29,14 @@ public class SpendDaoHibernate extends JpaService implements SpendDao {
     }
 
     @Override
+    public CategoryEntity getCategoryByUsernameCategoryName(String username, String categoryName) {
+        return em.createQuery("select u from CategoryEntity u where u.username=:username and u.category=:category", CategoryEntity.class)
+                .setParameter("username", username)
+                .setParameter("category", categoryName)
+                .getSingleResult();
+    }
+
+    @Override
     public void deleteAllSpends(List<SpendEntity> list) {
         list.forEach(this::remove);
     }

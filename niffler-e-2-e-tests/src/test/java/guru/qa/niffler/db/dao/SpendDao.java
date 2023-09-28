@@ -10,6 +10,7 @@ public interface SpendDao {
     void deleteCategoryInSpend(CategoryEntity category);
 
     CategoryEntity getCategoryByUUID(UUID uuid);
+    CategoryEntity getCategoryByUsernameCategoryName(String username, String categoryName);
 
     void deleteAllSpends(List<SpendEntity> list);
 
