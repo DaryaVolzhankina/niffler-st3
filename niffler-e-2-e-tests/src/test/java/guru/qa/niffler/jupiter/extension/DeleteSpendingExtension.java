@@ -8,8 +8,6 @@ import guru.qa.niffler.model.CategoryJson;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.util.UUID;
-
 public class DeleteSpendingExtension implements AfterEachCallback {
 
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(DeleteSpendingExtension.class);
@@ -19,10 +17,9 @@ public class DeleteSpendingExtension implements AfterEachCallback {
         DeleteSpendings annotation = context.getRequiredTestMethod().getAnnotation(DeleteSpendings.class);
         if (annotation != null) {
             SpendDao spendDao = new SpendDaoHibernate();
-            UUID categoryId = annotation.username().isEmpty() && annotation.category().isEmpty() ?
-                    ((CategoryJson) context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId() + "_category")).getId() :
-                    spendDao.getCategoryByUsernameCategoryName(annotation.username(), annotation.category()).getId();
-            CategoryEntity categoryEntity = spendDao.getCategoryByUUID(categoryId);
+            CategoryEntity categoryEntity = annotation.username().isEmpty() && annotation.category().isEmpty() ?
+                    spendDao.getCategoryByUUID(((CategoryJson) context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId() + "_category")).getId()) :
+                    spendDao.getCategoryByUsernameCategoryName(annotation.username(), annotation.category());
             spendDao.deleteAllSpends(spendDao.getSpendsByCategory(categoryEntity));
         }
     }
