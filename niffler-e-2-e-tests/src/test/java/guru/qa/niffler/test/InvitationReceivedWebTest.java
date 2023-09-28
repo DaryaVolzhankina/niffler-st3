@@ -9,6 +9,7 @@ import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static guru.qa.niffler.jupiter.annotation.User.UserType.INVITATION_RECEIVED;
 
@@ -17,54 +18,27 @@ public class InvitationReceivedWebTest extends BaseWebTest {
     @BeforeEach
     void doLogin(@User(userType = INVITATION_RECEIVED) UserJson userForTest) {
         Selenide.open("http://127.0.0.1:3000/main");
-        $("a[href*='redirect']").click();
-        $("input[name='username']").setValue(userForTest.getUsername());
-        $("input[name='password']").setValue(userForTest.getPassword());
-        $("button[type='submit']").click();
-    }
-
-    @Test
-    @AllureId("107")
-    void submitInvitationShouldBeDisplayedInTable0() throws InterruptedException {
         pages.mainPage()
-                .getHeader()
-                .getFriendsIcon()
+                .getLoginBtn()
                 .click();
-        pages.friendsPage()
-                .getNoFriendsField()
-                .shouldNotBe(Condition.visible);
-        pages.friendsPage()
-                .getActionsList()
-                .should(CollectionCondition.sizeGreaterThan(0));
-        pages.friendsPage()
-                .getActionsList()
-                .first()
-                .shouldBe(Condition.visible);
-    }
-
-    @Test
-    @AllureId("108")
-    void submitInvitationShouldBeDisplayedInTable1() throws InterruptedException {
-        pages.mainPage()
-                .getHeader()
-                .getFriendsIcon()
+        pages.loginPage()
+                .getUsernameField()
+                .setValue(userForTest.getUsername());
+        pages.loginPage()
+                .getPasswordField()
+                .setValue(userForTest.getPassword());
+        pages.loginPage()
+                .getSignInBtn()
                 .click();
-        pages.friendsPage()
-                .getNoFriendsField()
-                .shouldNotBe(Condition.visible);
-        pages.friendsPage()
-                .getActionsList()
-                .should(CollectionCondition.sizeGreaterThan(0));
-        pages.friendsPage()
-                .getActionsList()
-                .first()
-                .shouldBe(Condition.visible);
+        pages.homePage()
+                .getStatisticsGraph()
+                .shouldBe(visible);
     }
 
     @Test
-    @AllureId("109")
-    void submitInvitationShouldBeDisplayedInTable2() throws InterruptedException {
-        pages.mainPage()
+    @AllureId("2")
+    void submitInvitationShouldBeDisplayedInTable() throws InterruptedException {
+        pages.homePage()
                 .getHeader()
                 .getFriendsIcon()
                 .click();
