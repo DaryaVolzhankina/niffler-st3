@@ -1,7 +1,6 @@
 package guru.qa.niffler.jupiter.annotation;
 
-import guru.qa.niffler.jupiter.extension.SpendExtension;
-import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.jupiter.extension.DeleteSpendingExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.ElementType;
@@ -11,17 +10,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith({SpendExtension.class})
-public @interface Spend {
-
+@ExtendWith({DeleteSpendingExtension.class})
+public @interface DeleteSpendings {
     String username() default "";
-
-    String description();
-
     String category() default "";
-
-    double amount();
-
-    CurrencyValues currency();
-
 }

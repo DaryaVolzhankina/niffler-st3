@@ -1,7 +1,9 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.SpendService;
+import guru.qa.niffler.db.model.auth.AuthUserEntity;
 import guru.qa.niffler.jupiter.annotation.Spend;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -32,14 +34,18 @@ public class SpendExtension implements BeforeEachCallback, ParameterResolver {
         Spend annotation = context.getRequiredTestMethod().getAnnotation(Spend.class);
         if (annotation != null) {
             SpendJson spend = new SpendJson();
-            spend.setUsername(annotation.username());
+            String username = annotation.username().isEmpty() ?
+                    ((AuthUserEntity) context.getStore(DBUserExtension.NAMESPACE).get(context.getUniqueId())).getUsername() : annotation.username();
+            String category = annotation.category().isEmpty() ?
+                    ((CategoryJson) context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId() + "_category")).getCategory() : annotation.category();
+            spend.setUsername(username);
             spend.setDescription(annotation.description());
             spend.setAmount(annotation.amount());
-            spend.setCategory(annotation.category());
+            spend.setCategory(category);
             spend.setSpendDate(new Date());
             spend.setCurrency(annotation.currency());
             SpendJson createdSpend = spendService.addSpend(spend).execute().body();
-            context.getStore(NAMESPACE).put("spend", createdSpend);
+            context.getStore(NAMESPACE).put(context.getUniqueId() + "_spend", createdSpend);
         }
     }
 
@@ -54,6 +60,6 @@ public class SpendExtension implements BeforeEachCallback, ParameterResolver {
     public SpendJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return extensionContext
                 .getStore(SpendExtension.NAMESPACE)
-                .get("spend", SpendJson.class);
+                .get(extensionContext.getUniqueId() + "_spend", SpendJson.class);
     }
 }

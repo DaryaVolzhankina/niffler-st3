@@ -8,17 +8,15 @@ import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
 
 @ExtendWith(DaoExtension.class)
-public class LoginTest extends BaseWebTest {
+public class LogoutTest extends BaseWebTest {
 
     @DBUser
     @Test
-    @AllureId("4")
-    void mainPageShouldBeVisibleAfterLogin(AuthUserEntity user) {
+    @AllureId("5")
+    void loginPageShouldBeVisibleAfterLogoutTest(AuthUserEntity user) {
         Selenide.open("http://127.0.0.1:3000/main");
         pages.mainPage()
                 .getLoginBtn()
@@ -34,6 +32,18 @@ public class LoginTest extends BaseWebTest {
                 .click();
         pages.homePage()
                 .getStatisticsGraph()
+                .shouldBe(visible);
+
+        pages.homePage()
+                .getHeader()
+                .getLogoutBtn()
+                .click();
+
+        pages.mainPage()
+                .getLoginBtn()
+                .shouldBe(visible);
+        pages.mainPage()
+                .getRegisterBtn()
                 .shouldBe(visible);
     }
 }
