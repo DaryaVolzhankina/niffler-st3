@@ -23,10 +23,11 @@ public class ApiLoginExtension implements BeforeEachCallback, AfterTestExecution
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
         ApiLogin apiLoginAnnotation = extensionContext.getRequiredTestMethod().getAnnotation(ApiLogin.class);
         if (apiLoginAnnotation != null) {
+            AuthUserEntity authUserEntity = ((AuthUserEntity) extensionContext.getStore(DBUserExtension.NAMESPACE).get(extensionContext.getUniqueId()));
             String username = apiLoginAnnotation.username().isEmpty() ?
-                    ((AuthUserEntity) extensionContext.getStore(DBUserExtension.NAMESPACE).get(extensionContext.getUniqueId())).getUsername() : apiLoginAnnotation.username();
+                    authUserEntity.getUsername() : apiLoginAnnotation.username();
             String password = apiLoginAnnotation.username().isEmpty() ?
-                    ((AuthUserEntity) extensionContext.getStore(DBUserExtension.NAMESPACE).get(extensionContext.getUniqueId())).getPassword() : apiLoginAnnotation.password();
+                    authUserEntity.getPassword() : apiLoginAnnotation.password();
 
             doLogin(username, password);
         }
