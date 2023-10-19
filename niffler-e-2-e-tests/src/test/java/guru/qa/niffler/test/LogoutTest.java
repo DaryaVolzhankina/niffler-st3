@@ -2,6 +2,7 @@ package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.db.model.auth.AuthUserEntity;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.DBUser;
 import guru.qa.niffler.jupiter.extension.DaoExtension;
 import io.qameta.allure.AllureId;
@@ -14,22 +15,11 @@ import static com.codeborne.selenide.Condition.visible;
 public class LogoutTest extends BaseWebTest {
 
     @DBUser
+    @ApiLogin
     @Test
     @AllureId("5")
     void loginPageShouldBeVisibleAfterLogoutTest(AuthUserEntity user) {
         Selenide.open("http://127.0.0.1:3000/main");
-        pages.mainPage()
-                .getLoginBtn()
-                .click();
-        pages.loginPage()
-                .getUsernameField()
-                .setValue(user.getUsername());
-        pages.loginPage()
-                .getPasswordField()
-                .setValue(user.getPassword());
-        pages.loginPage()
-                .getSignInBtn()
-                .click();
         pages.homePage()
                 .getStatisticsGraph()
                 .shouldBe(visible);

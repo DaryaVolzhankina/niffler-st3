@@ -3,6 +3,7 @@ package guru.qa.niffler.test;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.db.model.auth.AuthUserEntity;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.DBUser;
 import guru.qa.niffler.jupiter.annotation.Spend;
@@ -31,27 +32,9 @@ public class DeleteSpendingWebTest extends BaseWebTest {
         Configuration.browserSize = "1980x1024";
     }
 
-    @BeforeEach
-    void doLogin(AuthUserEntity user) {
-        Selenide.open("http://127.0.0.1:3000/main");
-        pages.mainPage()
-                .getLoginBtn()
-                .click();
-        pages.loginPage()
-                .getUsernameField()
-                .setValue(user.getUsername());
-        pages.loginPage()
-                .getPasswordField()
-                .setValue(user.getPassword());
-        pages.loginPage()
-                .getSignInBtn()
-                .click();
-        pages.homePage()
-                .getStatisticsGraph()
-                .shouldBe(visible);
-    }
 
     @DBUser
+    @ApiLogin
     @Category(
             category = CATEGORY
     )
@@ -63,6 +46,8 @@ public class DeleteSpendingWebTest extends BaseWebTest {
     @Test
     @AllureId("6")
     void spendingShouldBeDeletedAfterDeleteAction(CategoryJson createdCategory, SpendJson createdSpend, AuthUserEntity user) {
+        Selenide.open(CFG.nifflerFrontUrl() + "/main");
+
         $(".spendings__content tbody")
                 .$$("tr")
                 .find(text(createdSpend.getDescription()))
