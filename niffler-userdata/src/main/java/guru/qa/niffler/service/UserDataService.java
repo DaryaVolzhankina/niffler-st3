@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class UserDataService {
@@ -115,7 +116,7 @@ public class UserDataService {
                 .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
                         ? FriendState.INVITE_SENT
                         : FriendState.FRIEND))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public @Nonnull
@@ -125,7 +126,7 @@ public class UserDataService {
                 .stream()
                 .filter(FriendsEntity::isPending)
                 .map(fe -> UserJson.fromEntity(fe.getUser(), FriendState.INVITE_RECEIVED))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
@@ -158,7 +159,7 @@ public class UserDataService {
                 .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
                         ? FriendState.INVITE_SENT
                         : FriendState.FRIEND))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -177,7 +178,7 @@ public class UserDataService {
                 .stream()
                 .filter(FriendsEntity::isPending)
                 .map(fe -> UserJson.fromEntity(fe.getUser(), FriendState.INVITE_RECEIVED))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -200,10 +201,11 @@ public class UserDataService {
                 .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
                         ? FriendState.INVITE_SENT
                         : FriendState.FRIEND))
-                .toList();
+                .collect(Collectors.toList());
     }
 
-    private @Nonnull UserEntity getRequiredUser(@Nonnull String username) {
+    @Nonnull
+    UserEntity getRequiredUser(@Nonnull String username) {
         UserEntity user = userRepository.findByUsername(username);
         if (user == null) {
             throw new NotFoundException("Can`t find user by username: " + username);
