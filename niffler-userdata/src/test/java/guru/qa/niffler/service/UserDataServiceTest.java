@@ -27,6 +27,7 @@ import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_RECEIVED;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -220,16 +221,12 @@ class UserDataServiceTest {
 
         testedObject = new UserDataService(userRepository);
         final List<UserJson> result = testedObject.removeFriend(firstTestUserName, secondTestUserName);
-        List<UserJson> friends = result
-                .stream()
-                .filter(friend -> friend.getUsername().equals(secondTestUserName))
-                .collect(Collectors.toList());
         List<FriendsEntity> invites = firstTestUser.getInvites()
                 .stream()
                 .filter(invite -> invite.getFriend().getUsername().equals(secondTestUserName))
                 .collect(Collectors.toList());
 
-        assertEquals(0, friends.size());
+        assertFalse(result.contains(UserJson.fromEntity(secondTestUser)));
         assertEquals(0, invites.size());
         verify(userRepository, times(2)).save(any(UserEntity.class));
     }
